@@ -1,0 +1,74 @@
+package com.Bank.DigitalBankSystem.entity;
+
+import com.Bank.DigitalBankSystem.enum_.Role;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class User implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String username;
+    private String password;
+    private String email;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Role not valid!")
+    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Account> account;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Transaction> sentTransactions;
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private List<Transaction> recievedTransactions;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role.toString()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
+}
