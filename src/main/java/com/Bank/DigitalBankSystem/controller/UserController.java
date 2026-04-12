@@ -1,15 +1,11 @@
 package com.Bank.DigitalBankSystem.controller;
 
-import com.Bank.DigitalBankSystem.dto.TransactionDTO;
 import com.Bank.DigitalBankSystem.dto.UserDTO;
 import com.Bank.DigitalBankSystem.dto.UserLoginDTO;
 import com.Bank.DigitalBankSystem.entity.User;
-import com.Bank.DigitalBankSystem.enum_.TransactionTypeEnum;
 import com.Bank.DigitalBankSystem.service.JwtService;
-import com.Bank.DigitalBankSystem.service.TransactionService;
 import com.Bank.DigitalBankSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
-
-    //TODO
-    @Autowired
-    ApplicationContext applicationContext;
 
     @Autowired
     UserService userService;
@@ -66,34 +58,5 @@ public class UserController {
                     .status(HttpStatus.FORBIDDEN)
                     .body("Failed to log in!");
         }
-    }
-
-    @PostMapping("testing")
-    public void testing(){
-
-        TransactionService t = applicationContext.getBean(TransactionService.class);
-        Runnable task = () -> {
-            System.out.println(Thread.currentThread().getName() + " entered method");
-
-            try {
-                Thread.sleep(2000); // simulate work
-                t.depositWithdraw(TransactionDTO.builder().senderAccountId(1L)
-                        .senderId(1L)
-                        .type(TransactionTypeEnum.DEPOSIT)
-                        .amount(1000.0)
-                        .build());
-            } catch (Exception e) {
-                System.out.println("Christos " + e.getMessage());
-            }
-
-            System.out.println(Thread.currentThread().getName() + " leaving method");
-        };
-
-        Thread user1 = new Thread(task, "User-1");
-        Thread user2 = new Thread(task, "User-2");
-
-        user1.start();
-        user2.start();
-
     }
 }
