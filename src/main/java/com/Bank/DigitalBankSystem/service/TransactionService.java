@@ -5,6 +5,8 @@ import com.Bank.DigitalBankSystem.entity.Account;
 import com.Bank.DigitalBankSystem.entity.Transaction;
 import com.Bank.DigitalBankSystem.entity.User;
 import com.Bank.DigitalBankSystem.enum_.TransactionTypeEnum;
+import com.Bank.DigitalBankSystem.exception.NotEnoughBalanceException;
+import com.Bank.DigitalBankSystem.exception.NotValidAmountException;
 import com.Bank.DigitalBankSystem.repository.AccountRepo;
 import com.Bank.DigitalBankSystem.repository.TransactionRepository;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
@@ -36,7 +38,7 @@ public class TransactionService {
     public Transaction depositWithdraw(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
-        if (amount < 0) throw new Exception("Negative amount not valid");
+        if (amount < 0) throw new NotValidAmountException("Negative amount not valid");
 
         Long userSenderId = transactionDto.getSenderId();
         User senderUser = utils.getTheUser(userSenderId, userService);
@@ -45,7 +47,7 @@ public class TransactionService {
 
         if(transactionDto.getType().equals(TransactionTypeEnum.WITHDRAW)){
             if(senderAccount.getBalance() < amount){
-                throw new Exception("Balance less than " + amount);
+                throw new NotEnoughBalanceException("Balance less than " + amount);
             }
             amount = -amount;
         }
@@ -68,7 +70,7 @@ public class TransactionService {
     public Transaction sendMoney(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
-        if (amount < 0) throw new Exception("Negative amount not valid");
+        if (amount < 0) throw new NotValidAmountException("Negative amount not valid");
 
         Long userSenderId = transactionDto.getSenderId();
         User senderUser = utils.getTheUser(userSenderId, userService);
@@ -81,7 +83,7 @@ public class TransactionService {
         Account receiverAccount = utils.getTheAccountOfUser(accountReceiverId, userReceiverId, accountService);
 
         if(senderAccount.getBalance() < amount){
-            throw new Exception("Balance less than " + amount);
+            throw new NotEnoughBalanceException("Balance less than " + amount);
         }
 
         senderAccount.setBalance(senderAccount.getBalance() - amount);

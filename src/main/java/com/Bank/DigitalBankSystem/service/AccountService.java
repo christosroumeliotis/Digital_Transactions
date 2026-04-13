@@ -25,14 +25,14 @@ public class AccountService {
 
     private final Utils utils = new UtilsImpl();
 
-    public ResponseEntity<String> createAccount(Long userId) throws Exception {
+    public String createAccount(Long userId) throws Exception {
         User userFound = utils.getTheUser(userId, userService);
         Account account = Account.builder()
                 .user(userFound)
                 .createdAt(LocalDateTime.now())
                 .balance(0.0).build();
         accountRepo.save(account);
-        return ResponseEntity.ok(userFound.getUsername() + " created a new account!");
+        return userFound.getUsername() + " created a new account!";
     }
 
     public List<Account> findAccountsByUserId(Long userId) throws Exception {

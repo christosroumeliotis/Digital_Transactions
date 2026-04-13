@@ -19,7 +19,32 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<String> makeTransaction(@RequestBody TransactionDTO transaction) throws Exception {
 
-        try{
+//        try{
+//            TransactionTypeEnum transactionType = transaction.getType();
+//            Transaction transactionCreated;
+//            return switch (transactionType) {
+//                case TransactionTypeEnum.DEPOSIT -> {
+//                    transactionCreated = transactionService.depositWithdraw(transaction);
+//                    yield ResponseEntity.ok(transactionCreated.getSender().getUsername() + " added "
+//                            + transactionCreated.getAmount() + " to "
+//                            + transactionCreated.getSenderAccount().getId() + " account");
+//                }
+//                case TransactionTypeEnum.WITHDRAW -> {
+//                    transactionCreated = transactionService.depositWithdraw(transaction);
+//                    yield ResponseEntity.ok(transactionCreated.getSender().getUsername() + " got "
+//                            + transactionCreated.getAmount() + " from "
+//                            + transactionCreated.getSenderAccount().getId() + " account");
+//                }
+//                case TransactionTypeEnum.SENDMONEY -> {
+//                    transactionCreated = transactionService.sendMoney(transaction);
+//                    yield ResponseEntity.ok(transactionCreated.getSender().getUsername() + " sent "
+//                            + transactionCreated.getAmount() + " to "
+//                            + transactionCreated.getReceiver().getUsername());
+//                }
+//            };
+//        }catch (Exception exception){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+//        }
             TransactionTypeEnum transactionType = transaction.getType();
             Transaction transactionCreated;
             return switch (transactionType) {
@@ -42,8 +67,5 @@ public class TransactionController {
                             + transactionCreated.getReceiver().getUsername());
                 }
             };
-        }catch (Exception exception){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-        }
     }
 }

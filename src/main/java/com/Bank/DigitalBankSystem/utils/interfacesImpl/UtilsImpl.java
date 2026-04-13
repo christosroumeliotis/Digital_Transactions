@@ -1,12 +1,18 @@
 package com.Bank.DigitalBankSystem.utils.interfacesImpl;
 
+import com.Bank.DigitalBankSystem.dto.ErrorResponse;
+import com.Bank.DigitalBankSystem.dto.ResponsesDto.SuccessResponse;
 import com.Bank.DigitalBankSystem.entity.Account;
 import com.Bank.DigitalBankSystem.entity.User;
+import com.Bank.DigitalBankSystem.exception.NoRecordFoundException;
 import com.Bank.DigitalBankSystem.service.AccountService;
 import com.Bank.DigitalBankSystem.service.UserService;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,7 +24,7 @@ public class UtilsImpl implements Utils {
     public User getTheUser(Long userId, UserService userService) throws Exception {
         Optional<User> user = userService.findUser(userId);
         if (user.isEmpty())
-            throw new Exception("User with ID: " + userId + " not found!");
+            throw new NoRecordFoundException("User with ID: " + userId + " not found!");
         return user.get();
     }
 
@@ -31,6 +37,14 @@ public class UtilsImpl implements Utils {
                 return account;
             }
         }
-        throw new Exception("Account with ID: " + accountId + " for user with ID: " + userId + " not found!");
+        throw new NoRecordFoundException("Account with ID: " + accountId + " for user with ID: " + userId + " not found!");
+    }
+
+    @Override
+    public ResponseEntity<SuccessResponse> createSuccessResponse(Object input, HttpStatus httpStatus) {
+        SuccessResponse successResponse = new SuccessResponse();
+        successResponse.setResponse(input);
+        successResponse.setTimestamp(Instant.now());
+        return new ResponseEntity<>(successResponse, httpStatus);
     }
 }
