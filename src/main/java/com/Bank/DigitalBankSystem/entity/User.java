@@ -2,6 +2,8 @@ package com.Bank.DigitalBankSystem.entity;
 
 import com.Bank.DigitalBankSystem.enum_.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +25,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Username cannot be blank")
     private String username;
+    @NotBlank(message = "Password cannot be blank")
     private String password;
+    @Email(message = "Not valid email")
     private String email;
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role not valid!")

@@ -5,6 +5,7 @@ import com.Bank.DigitalBankSystem.dto.UserLoginDTO;
 import com.Bank.DigitalBankSystem.entity.User;
 import com.Bank.DigitalBankSystem.service.JwtService;
 import com.Bank.DigitalBankSystem.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody User user){
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody User user){
         UserDTO userDTO = userService.addUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> registerUser(@RequestBody UserLoginDTO user) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody UserLoginDTO user) {
 
         //Authenticate the username and password
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
