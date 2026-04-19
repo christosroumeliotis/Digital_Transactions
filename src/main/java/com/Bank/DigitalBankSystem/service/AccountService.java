@@ -1,13 +1,14 @@
 package com.Bank.DigitalBankSystem.service;
 
+import com.Bank.DigitalBankSystem.config.mapper.AccountMapper;
+import com.Bank.DigitalBankSystem.dto.AccountDTO;
 import com.Bank.DigitalBankSystem.entity.Account;
 import com.Bank.DigitalBankSystem.entity.User;
+import com.Bank.DigitalBankSystem.exception.NoRecordFoundException;
 import com.Bank.DigitalBankSystem.repository.AccountRepo;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
 import com.Bank.DigitalBankSystem.utils.interfacesImpl.UtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ public class AccountService {
 
     public Account findAccountByAccountId(Long accountId) {
         Optional<Account> accountFound = accountRepo.findById(accountId);
-        return accountFound.orElse(null);
+        if(accountFound.isEmpty()) throw new NoRecordFoundException("Account not found");
+        return accountFound.get();
     }
 }

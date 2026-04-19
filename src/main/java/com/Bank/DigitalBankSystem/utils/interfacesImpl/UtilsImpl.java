@@ -1,6 +1,5 @@
 package com.Bank.DigitalBankSystem.utils.interfacesImpl;
 
-import com.Bank.DigitalBankSystem.dto.ErrorResponse;
 import com.Bank.DigitalBankSystem.dto.ResponsesDto.SuccessResponse;
 import com.Bank.DigitalBankSystem.entity.Account;
 import com.Bank.DigitalBankSystem.entity.User;
@@ -44,7 +43,7 @@ public class UtilsImpl implements Utils {
     public ResponseEntity<SuccessResponse> createSuccessResponse(Object input, HttpStatus httpStatus) {
         SuccessResponse successResponse = new SuccessResponse();
         successResponse.setResponse(input);
-        successResponse.setTimestamp(Instant.now());
+        successResponse.setTimestampOfCall(Instant.now());
         return new ResponseEntity<>(successResponse, httpStatus);
     }
 }

@@ -6,6 +6,7 @@ import com.Bank.DigitalBankSystem.enum_.TransactionTypeEnum;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TransactionDTO {
     private TransactionTypeEnum type;
+    @Positive(message = "Price must be positive")
     private Double amount;
     private LocalDateTime transactionTime;
     private Long senderId;

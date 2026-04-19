@@ -14,5 +14,5 @@ public interface Utils {
 
     Account getTheAccountOfUser(Long userId, Long accountId, AccountService accountService) throws Exception;
 
-    ResponseEntity<SuccessResponse> createSuccessResponse(Object input, HttpStatus httpStatus);
+    <T> ResponseEntity<SuccessResponse<T>> createSuccessResponse(Object input, HttpStatus httpStatus);
 }

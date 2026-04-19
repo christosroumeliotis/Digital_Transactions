@@ -1,7 +1,9 @@
 package com.Bank.DigitalBankSystem.exception;
 
 import com.Bank.DigitalBankSystem.dto.ErrorResponse;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,6 +19,12 @@ public class GlobalExceptionHandler {
         errorResponse.setHttpStatus(ex.getHttpStatus());
         errorResponse.setTimestamp(ex.getTimestamp());
         return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseBody
+    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
 }

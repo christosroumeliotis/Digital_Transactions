@@ -1,5 +1,6 @@
 package com.Bank.DigitalBankSystem.controller;
 
+import com.Bank.DigitalBankSystem.config.mapper.AccountMapper;
 import com.Bank.DigitalBankSystem.dto.AccountDTO;
 import com.Bank.DigitalBankSystem.dto.ResponsesDto.SuccessResponse;
 import com.Bank.DigitalBankSystem.entity.Account;
@@ -24,37 +25,25 @@ public class AccountController {
     private final Utils utils = new UtilsImpl();
 
     @PostMapping("/user/{userId}")
-    public ResponseEntity<SuccessResponse> createAccount(@PathVariable Long userId) throws Exception {
+    public ResponseEntity<SuccessResponse<String>> createAccount(@PathVariable Long userId) throws Exception {
 
-          //return accountService.createAccount(userId);
         return utils.createSuccessResponse(accountService.createAccount(userId), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AccountDTO>> getUserAccounts(@PathVariable Long userId) throws Exception {
-//        try {
-//            List<Account> accounts = accountService.findAccountsByUserId(userId);
-//            List<AccountDTO> accountsReturn = new ArrayList<>();
-//            for(Account account : accounts){
-//                accountsReturn.add(AccountDTO.builder().createdAt(account.getCreatedAt()).balance(account.getBalance()).build());
-//            }
-//            return ResponseEntity.ok(accountsReturn);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        }
+    public ResponseEntity<SuccessResponse<List<AccountDTO>>> getUserAccounts(@PathVariable Long userId) throws Exception {
+
           List<Account> accounts = accountService.findAccountsByUserId(userId);
           List<AccountDTO> accountsReturn = new ArrayList<>();
           for(Account account : accounts){
-             accountsReturn.add(AccountDTO.builder().createdAt(account.getCreatedAt()).balance(account.getBalance()).build());
+              accountsReturn.add(AccountMapper.INSTANCE.toDto(account));
           }
-          return ResponseEntity.ok(accountsReturn);
+          return utils.createSuccessResponse(accountsReturn, HttpStatus.FOUND);
     }
 
     @GetMapping("/{accountId}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long accountId){
+    public ResponseEntity<SuccessResponse<AccountDTO>> getAccountById(@PathVariable Long accountId){
         Account account = accountService.findAccountByAccountId(accountId);
-        if(account == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-
-        return ResponseEntity.ok(AccountDTO.builder().createdAt(account.getCreatedAt()).balance(account.getBalance()).build());
+        return utils.createSuccessResponse(AccountMapper.INSTANCE.toDto(account), HttpStatus.FOUND);
     }
 }
