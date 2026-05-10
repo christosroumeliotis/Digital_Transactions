@@ -8,6 +8,7 @@ import com.Bank.DigitalBankSystem.service.AccountService;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
 import com.Bank.DigitalBankSystem.utils.interfacesImpl.UtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    CacheManager cacheManager;
 
     private final Utils utils = new UtilsImpl();
 

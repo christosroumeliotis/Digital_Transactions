@@ -9,6 +9,7 @@ import com.Bank.DigitalBankSystem.repository.AccountRepo;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
 import com.Bank.DigitalBankSystem.utils.interfacesImpl.UtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,11 +37,13 @@ public class AccountService {
         return userFound.getUsername() + " created a new account!";
     }
 
+    //@Cacheable(value = "user_accounts", key = "#userId")
     public List<Account> findAccountsByUserId(Long userId) throws Exception {
         User userFound = utils.getTheUser(userId, userService);
         return userFound.getAccount();
     }
 
+    @Cacheable(value = "account", key = "#accountId")
     public Account findAccountByAccountId(Long accountId) {
         Optional<Account> accountFound = accountRepo.findById(accountId);
         if(accountFound.isEmpty()) throw new NoRecordFoundException("Account not found");

@@ -12,6 +12,9 @@ import com.Bank.DigitalBankSystem.repository.TransactionRepository;
 import com.Bank.DigitalBankSystem.utils.interfaces.Utils;
 import com.Bank.DigitalBankSystem.utils.interfacesImpl.UtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +37,8 @@ public class TransactionService {
 
     private final Utils utils = new UtilsImpl();
 
-    @Transactional(rollbackFor = Exception.class) //If throws an exception before the transaction is saved, we rollback
+    @Transactional
+    @CacheEvict(value = "account", key = "#transactionDto.senderAccountId")
     public Transaction depositWithdraw(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
@@ -66,7 +70,14 @@ public class TransactionService {
         return transaction;
     }
 
-    @Transactional(rollbackFor = Exception.class)//If throws an exception before the transaction is saved, we rollback
+    @Transactional//If throws an exception before the transaction is saved, we rollback
+    @Caching(evict = {
+            @CacheEvict(value = "account",
+                    key = "#transactionDto.senderAccountId"),
+
+            @CacheEvict(value = "account",
+                    key = "#transactionDto.receiverAccountId")
+    })
     public Transaction sendMoney(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
