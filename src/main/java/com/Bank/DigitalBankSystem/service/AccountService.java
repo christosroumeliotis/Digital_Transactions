@@ -37,7 +37,7 @@ public class AccountService {
         return userFound.getUsername() + " created a new account!";
     }
 
-    //@Cacheable(value = "user_accounts", key = "#userId")
+    @Cacheable(value = "user_accounts", key = "#userId")
     public List<Account> findAccountsByUserId(Long userId) throws Exception {
         User userFound = utils.getTheUser(userId, userService);
         return userFound.getAccount();

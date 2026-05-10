@@ -39,6 +39,11 @@ public class TransactionService {
 
     @Transactional
     @CacheEvict(value = "account", key = "#transactionDto.senderAccountId")
+    @Caching(evict = {
+            @CacheEvict(value = "account", key = "#transactionDto.senderAccountId"),
+
+            @CacheEvict(value = "user_accounts", key = "#transactionDto.senderId")
+    })
     public Transaction depositWithdraw(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
@@ -76,7 +81,11 @@ public class TransactionService {
                     key = "#transactionDto.senderAccountId"),
 
             @CacheEvict(value = "account",
-                    key = "#transactionDto.receiverAccountId")
+                    key = "#transactionDto.receiverAccountId"),
+
+            @CacheEvict(value = "user_accounts", key = "#transactionDto.senderId"),
+
+            @CacheEvict(value = "user_accounts", key = "#transactionDto.receiverId")
     })
     public Transaction sendMoney(TransactionDTO transactionDto) throws Exception {
 
