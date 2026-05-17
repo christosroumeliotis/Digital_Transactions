@@ -1,5 +1,6 @@
 package com.Bank.DigitalBankSystem.config.security;
 
+import com.Bank.DigitalBankSystem.config.RateLimitingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,9 @@ public class SecurityConfig {
     @Autowired
     JwtFilter jwtFilter;
 
+    @Autowired
+    RateLimitingFilter rateLimitingFilter;
+
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
@@ -42,9 +46,20 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) //Add a new filter to filter chain
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class) //Add a new filter to filter chain
+                .addFilterBefore(jwtFilter, RateLimitingFilter.class) //Add a new filter to filter chain
                 .build();
     }
+
+//Different way to register a filter in filter chain
+//	@Bean
+//	public FilterRegistrationBean<RateLimitingFilter> rateLimitingFilterBean() { //Adding Filtering with a Custom Filter
+//		FilterRegistrationBean<RateLimitingFilter> registration = new FilterRegistrationBean<>();
+//		registration.setFilter(rateLimitingFilter);
+//		registration.setOrder(1);
+//		registration.addUrlPatterns("/transaction");
+//		return registration;
+//	}
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config){
