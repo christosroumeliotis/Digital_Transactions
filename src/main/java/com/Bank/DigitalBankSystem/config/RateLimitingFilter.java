@@ -4,6 +4,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +22,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
+
+        String path = servletRequest.getRequestURI();
+
+        if (!path.startsWith(servletRequest.getContextPath() + "/transaction")) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
         String clientIp = servletRequest.getRemoteAddr();
         requestCounts.putIfAbsent(clientIp, new AtomicInteger(0));
