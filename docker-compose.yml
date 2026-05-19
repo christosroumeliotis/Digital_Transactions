@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - s-network
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: digital_bank
+      MYSQL_USER: default_user
+      MYSQL_PASSWORD: default_password
+    ports:
+      - "3307:3306"
+    networks:
+      - s-network
+    volumes:
+      - mysql-data:/var/lib/mysql/data
+
+networks:
+  s-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
