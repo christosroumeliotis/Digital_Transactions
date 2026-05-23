@@ -5,6 +5,10 @@ import com.Bank.DigitalBankSystem.dto.UserLoginDTO;
 import com.Bank.DigitalBankSystem.entity.User;
 import com.Bank.DigitalBankSystem.service.JwtService;
 import com.Bank.DigitalBankSystem.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,16 +38,55 @@ public class UserController {
         return ResponseEntity.ok("Hello!");
     }
 
+
+    @Operation(
+            summary = "Create a new user",
+            description = "Creates a new user"
+    )
+    @ApiResponse( responseCode = "200", description = "Successful response", content =
+            @Content(  mediaType = "application/json", examples =
+            @ExampleObject( value = """ 
+                                    {"username": "eleni", "email": "eleni@gmail.com"}
+                                    """
+            )
+    ))
     @PostMapping("register")
-    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody User user){
+    public ResponseEntity<UserDTO> registerUser(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody( description = "Create new user request", required = true, content =
+            @Content( mediaType = "application/json", examples =
+            @ExampleObject( name = "Create New User Request",
+                            value = """
+                                    { "username": "eleni", "password": "eleni123", "email":"eleni@gmail.com", "role":"USER" }
+                                    """
+            )))
+            @Valid @RequestBody User user){
         UserDTO userDTO = userService.addUser(user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userDTO);
     }
 
+    @Operation(
+            summary = "Login a User",
+            description = "Generates a new JWT Token"
+    )
+    @ApiResponse( responseCode = "200", description = "Successful response", content =
+    @Content(  mediaType = "application/json", examples =
+    @ExampleObject( name = "Create JWT - Login Request",
+                    value = """ 
+                            eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpcyIsImlhdCI6MTc3OTUzODM4OSwiZXhwIjoxNzc5NTM4Njg5fQ.hXuR4yLwA2Zz-VqwuIc8xkfugUONUmQVnDSXa9YiTtg
+                            """
+    )))
     @PostMapping("login")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserLoginDTO user) {
+    public ResponseEntity<String> registerUser(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody( description = "Create new user request", required = true, content =
+            @Content( mediaType = "application/json", examples =
+            @ExampleObject( name = "Create JWT - Login Request",
+                            value = """
+                                    { "username": "chris", "password": "chris123" }
+                                    """
+            )))
+            @Valid @RequestBody UserLoginDTO user) {
 
         //Authenticate the username and password
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
