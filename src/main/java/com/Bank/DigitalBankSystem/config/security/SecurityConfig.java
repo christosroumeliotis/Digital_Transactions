@@ -42,7 +42,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
         return http.csrf(c -> c.disable())
                 .authorizeHttpRequests(a -> a
-                        .requestMatchers("/register","/login","/hello").permitAll()
+                        .requestMatchers("/register","/login","/hello",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-ui",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/api-docs",
+                                "/api-docs/**",
+                                "/webjars/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
