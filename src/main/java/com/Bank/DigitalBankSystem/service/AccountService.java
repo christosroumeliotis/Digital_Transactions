@@ -27,8 +27,8 @@ public class AccountService {
 
     private final Utils utils = new UtilsImpl();
 
-    public String createAccount(Long userId) throws Exception {
-        User userFound = utils.getTheUser(userId, userService);
+    public String createAccount(String customerNumber) throws Exception {
+        User userFound = utils.getUserByCustomerName(customerNumber, userService);
         Account account = Account.builder()
                 .user(userFound)
                 .createdAt(LocalDateTime.now())
@@ -40,6 +40,12 @@ public class AccountService {
     @Cacheable(value = "user_accounts", key = "#userId")
     public List<Account> findAccountsByUserId(Long userId) throws Exception {
         User userFound = utils.getTheUser(userId, userService);
+        return userFound.getAccount();
+    }
+
+    @Cacheable(value = "user_accounts_crs", key = "#customerNumber")
+    public List<Account> findAccountsByCustomerNumber(String customerNumber) throws Exception {
+        User userFound = utils.getUserByCustomerName(customerNumber, userService);
         return userFound.getAccount();
     }
 

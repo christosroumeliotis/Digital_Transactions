@@ -44,12 +44,12 @@ public class AccountController {
                             """
             )
     ))
-    @PostMapping("/user/{userId}")
+    @PostMapping("/user")
     public ResponseEntity<SuccessResponse<String>> createAccount(
-            @Parameter( description = "User ID", required = true, example = "2")
-            @PathVariable Long userId) throws Exception {
+            @Parameter( description = "Customer Number", required = true, example = "123")
+            @RequestParam() String customerNumber) throws Exception {
 
-        return utils.createSuccessResponse(accountService.createAccount(userId), HttpStatus.CREATED);
+        return utils.createSuccessResponse(accountService.createAccount(customerNumber), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -63,12 +63,12 @@ public class AccountController {
                             """
             )
     ))
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     public ResponseEntity<SuccessResponse<List<AccountDTO>>> getUserAccounts(
-            @Parameter( description = "User ID", required = true, example = "1")
-            @PathVariable Long userId) throws Exception {
+            @Parameter( description = "Customer Number", required = true, example = "123")
+            @RequestParam() String customerNumber) throws Exception {
 
-          List<Account> accounts = accountService.findAccountsByUserId(userId);
+          List<Account> accounts = accountService.findAccountsByCustomerNumber(customerNumber);
           List<AccountDTO> accountsReturn = new ArrayList<>();
           for(Account account : accounts){
               accountsReturn.add(AccountMapper.INSTANCE.toDto(account));

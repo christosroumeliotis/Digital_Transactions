@@ -28,6 +28,14 @@ public class UtilsImpl implements Utils {
     }
 
     @Override
+    public User getUserByCustomerName(String customerNumber, UserService userService) throws Exception {
+        Optional<User> user = userService.findUserIdByCustomerNumber(customerNumber);
+        if (user.isEmpty())
+            throw new NoRecordFoundException("User with CRS: " + customerNumber + " not found!");
+        return user.get();
+    }
+
+    @Override
     public Account getTheAccountOfUser(Long accountId, Long userId, AccountService accountService) throws Exception {
         List<Account> accounts =  accountService.findAccountsByUserId(userId);
         if (accounts==null) return null;
