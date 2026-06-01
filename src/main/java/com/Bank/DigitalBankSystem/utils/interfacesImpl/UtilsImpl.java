@@ -36,15 +36,15 @@ public class UtilsImpl implements Utils {
     }
 
     @Override
-    public Account getTheAccountOfUser(Long accountId, Long userId, AccountService accountService) throws Exception {
-        List<Account> accounts =  accountService.findAccountsByUserId(userId);
+    public Account getTheAccountOfUser(String accountNumber, String customerNumber, AccountService accountService) throws Exception {
+        List<Account> accounts =  accountService.findAccountsByCustomerNumber(customerNumber);
         if (accounts==null) return null;
         for(Account account : accounts){
-            if(Objects.equals(account.getId(), accountId)){
+            if(Objects.equals(account.getAccountNumber(), accountNumber)){
                 return account;
             }
         }
-        throw new NoRecordFoundException("Account with ID: " + accountId + " for user with ID: " + userId + " not found!");
+        throw new NoRecordFoundException("Account with number: " + accountNumber + " for user with CRS: " + customerNumber + " not found!");
     }
 
     @Override

@@ -18,6 +18,8 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
+    private String accountNumber;
     private Double balance;
     private LocalDateTime createdAt;
     @ManyToOne
@@ -25,7 +27,6 @@ public class Account {
     private User user;
     @Version
     private Long version;
-
     @Override
     public String toString() {
         return "Account{" +

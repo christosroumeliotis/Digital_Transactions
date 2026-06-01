@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDTO {
+    private String accountNumber;
     private Double balance;
     private LocalDateTime createdAt;
 }

@@ -12,7 +12,6 @@ public interface Utils {
 
     User getTheUser(Long userId, UserService userService) throws Exception;
     User getUserByCustomerName(String customerNumber, UserService userService) throws Exception;
-    Account getTheAccountOfUser(Long userId, Long accountId, AccountService accountService) throws Exception;
-
+    Account getTheAccountOfUser(String accountNumber, String customerNumber, AccountService accountService) throws Exception;
     <T> ResponseEntity<SuccessResponse<T>> createSuccessResponse(Object input, HttpStatus httpStatus);
 }

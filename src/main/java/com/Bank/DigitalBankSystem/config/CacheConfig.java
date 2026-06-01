@@ -12,6 +12,6 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("account", "user_accounts", "user_accounts_crs");
+        return new ConcurrentMapCacheManager("account", "user_accounts", "user_accounts_crs","account_number");
     }
 }

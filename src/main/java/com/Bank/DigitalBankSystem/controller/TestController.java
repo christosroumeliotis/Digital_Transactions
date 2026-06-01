@@ -24,8 +24,8 @@ public class TestController {
                 System.out.println(Thread.currentThread().getName() + " entered method");
                 try {
                     Thread.sleep(2000); // simulate work
-                    t.depositWithdraw(TransactionDTO.builder().senderAccountId(1L)
-                            .senderId(1L)
+                    t.depositWithdraw(TransactionDTO.builder().senderAccountNumber("ts")
+                            .senderCustomerNumber("123")
                             .type(TransactionTypeEnum.DEPOSIT)
                             .amount(1000.0)
                             .build());

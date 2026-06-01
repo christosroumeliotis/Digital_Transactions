@@ -28,26 +28,26 @@ public class TransactionController {
 
     @Operation(
             summary = "Make a transaction",
-            description = "Make a transaction Withdraw - Deposit - Send Money to other account"
+            description = "Make a transaction (Withdraw - Deposit - Send Money)"
     )
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                                    { "response": "eleni added 1000.0 to 3 account", "timestampOfCall": "2026-05-23T12:33:29.990665700Z" }
+                                    {"response": "eleni added 1000.0 to GR123 account","timestampOfCall": "2026-06-01T08:35:14.783584Z"}
                                     """
             )
     ))
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                                    { "response": "eleni got -1000.0 from 3 account", "timestampOfCall": "2026-05-23T12:34:25.441902400Z" }
+                                    {"response": "eleni got -1000.0 from GR123 account","timestampOfCall": "2026-06-01T08:36:50.485129600Z"}
                                     """
             )
     ))
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                                    { "response": "chris sent 1000.0 to eleni", "timestampOfCall": "2026-05-23T12:35:37.427445900Z" }  
+                                    {"response": "eleni sent 1000.0 to chris","timestampOfCall": "2026-06-01T08:41:58.542191300Z"}
                                     """
             )
     ))
@@ -57,17 +57,17 @@ public class TransactionController {
             @Content( mediaType = "application/json",
             examples ={@ExampleObject( name = "Deposit Money",
                                        value = """
-                                               { "amount":1000.0, "type":"DEPOSIT", "senderId":2, "senderAccountId":3 }
+                                               {"amount":1000.0,"type":"DEPOSIT","senderCustomerNumber":"123","senderAccountNumber":"GR123"}
                                                """
                        ),
                        @ExampleObject( name = "Withdraw Money",
                                        value = """
-                                               { "amount":1000.0, "type":"WITHDRAW", "senderId":2, "senderAccountId":3 }
+                                               {"amount":1000.0,"type":"WITHDRAW","senderCustomerNumber":"123","senderAccountNumber":"GR123"}
                                                """
                        ),
                        @ExampleObject( name = "Send Money",
                                        value = """
-                                               { "amount":1000.0, "type":"SENDMONEY", "senderId":1, "senderAccountId":1, "receiverId":"2", "receiverAccountId":"3" }
+                                               {"amount":1000.0,"type":"SENDMONEY","senderCustomerNumber":"123","senderAccountNumber":"GR123","receiverCustomerNumber":"1234","receiverAccountNumber":"GR1234"}
                                                """
                        )}
 
@@ -81,13 +81,13 @@ public class TransactionController {
                     transactionCreated = transactionService.depositWithdraw(transaction);
                     yield utils.createSuccessResponse(transactionCreated.getSender().getUsername() + " added "
                             + transactionCreated.getAmount() + " to "
-                            + transactionCreated.getSenderAccount().getId() + " account", HttpStatus.OK);
+                            + transactionCreated.getSenderAccount().getAccountNumber() + " account", HttpStatus.OK);
                 }
                 case TransactionTypeEnum.WITHDRAW -> {
                     transactionCreated = transactionService.depositWithdraw(transaction);
                     yield utils.createSuccessResponse(transactionCreated.getSender().getUsername() + " got "
                             + transactionCreated.getAmount() + " from "
-                            + transactionCreated.getSenderAccount().getId() + " account", HttpStatus.OK);
+                            + transactionCreated.getSenderAccount().getAccountNumber() + " account", HttpStatus.OK);
                 }
                 case TransactionTypeEnum.SENDMONEY -> {
                     transactionCreated = transactionService.sendMoney(transaction);
