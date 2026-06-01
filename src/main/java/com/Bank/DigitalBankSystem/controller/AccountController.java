@@ -40,16 +40,18 @@ public class AccountController {
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                            {"response": "eleni created a new account!", "timestampOfCall": "2026-05-23T12:20:25.945696700Z"}
+                            {"response": "eleni created the GR@1234 account!", "timestampOfCall": "2026-05-23T12:20:25.945696700Z"}
                             """
             )
     ))
-    @PostMapping("/user/{userId}")
+    @PostMapping("/user")
     public ResponseEntity<SuccessResponse<String>> createAccount(
-            @Parameter( description = "User ID", required = true, example = "2")
-            @PathVariable Long userId) throws Exception {
+            @Parameter( description = "Customer Number", required = true, example = "123")
+            @RequestParam() String customerNumber,
+            @Parameter( description = "Account Number", required = true, example = "GR@1234")
+            @RequestParam() String accountNumber) throws Exception {
 
-        return utils.createSuccessResponse(accountService.createAccount(userId), HttpStatus.CREATED);
+        return utils.createSuccessResponse(accountService.createAccount(customerNumber, accountNumber), HttpStatus.CREATED);
     }
 
     @Operation(
@@ -59,16 +61,18 @@ public class AccountController {
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                            {"response": [ { "balance": 128500.0, "createdAt": "2026-04-11T13:09:22.251743" }, { "balance": 0.0, "createdAt": "2026-04-11T13:09:33.125871" } ], "timestampOfCall": "2026-05-23T12:25:37.768822500Z" }
-                            """
+                                    {"response": [{"accountNumber": "GR123","balance": 0.0,"createdAt": "2026-06-01T11:01:05.013237"},
+                                                  {"accountNumber": "GR@123","balance": 0.0,"createdAt": "2026-06-01T11:03:13.953875"},
+                                                  {"accountNumber": "GR@1234","balance": 0.0,"createdAt": "2026-06-01T11:19:56.970809"}],"timestampOfCall": "2026-06-01T08:21:46.464947800Z"}
+                                    """
             )
     ))
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     public ResponseEntity<SuccessResponse<List<AccountDTO>>> getUserAccounts(
-            @Parameter( description = "User ID", required = true, example = "1")
-            @PathVariable Long userId) throws Exception {
+            @Parameter( description = "Customer Number", required = true, example = "123")
+            @RequestParam() String customerNumber) throws Exception {
 
-          List<Account> accounts = accountService.findAccountsByUserId(userId);
+          List<Account> accounts = accountService.findAccountsByCustomerNumber(customerNumber);
           List<AccountDTO> accountsReturn = new ArrayList<>();
           for(Account account : accounts){
               accountsReturn.add(AccountMapper.INSTANCE.toDto(account));
@@ -78,20 +82,20 @@ public class AccountController {
 
     @Operation(
             summary = "Get Account",
-            description = "Get an account using its ID"
+            description = "Get an account using Account Number"
     )
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
             @ExampleObject( value = """
-                            {"response": [ { "balance": 128500.0, "createdAt": "2026-04-11T13:09:22.251743" }, { "balance": 0.0, "createdAt": "2026-04-11T13:09:33.125871" } ], "timestampOfCall": "2026-05-23T12:25:37.768822500Z" }
-                            """
+                                    {"response": {"accountNumber": "GR123","balance": 0.0,"createdAt": "2026-06-01T11:01:05.013237"},"timestampOfCall": "2026-06-01T08:23:33.778201400Z"}
+                                    """
             )
     ))
-    @GetMapping("/{accountId}")
-    public ResponseEntity<SuccessResponse<AccountDTO>> getAccountById(
-            @Parameter( description = "Account ID", required = true, example = "1")
-            @PathVariable Long accountId){
-        Account account = accountService.findAccountByAccountId(accountId);
+    @GetMapping("")
+    public ResponseEntity<SuccessResponse<AccountDTO>> getAccountByNumber(
+            @Parameter( description = "Account Number", required = true, example = "GR123")
+            @RequestParam String accountNumber){
+        Account account = accountService.findAccountByAccountNumber(accountNumber);
         return utils.createSuccessResponse(AccountMapper.INSTANCE.toDto(account), HttpStatus.FOUND);
     }
 }

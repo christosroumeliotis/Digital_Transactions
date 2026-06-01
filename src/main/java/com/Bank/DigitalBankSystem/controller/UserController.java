@@ -45,8 +45,8 @@ public class UserController {
     )
     @ApiResponse( responseCode = "200", description = "Successful response", content =
             @Content(  mediaType = "application/json", examples =
-            @ExampleObject( value = """ 
-                                    {"username": "eleni", "email": "eleni@gmail.com"}
+            @ExampleObject( value = """
+                                    {"customerNumber": "123","username": "eleni","email": "eleni@gmail.com"}
                                     """
             )
     ))
@@ -56,7 +56,7 @@ public class UserController {
             @Content( mediaType = "application/json", examples =
             @ExampleObject( name = "Create New User Request",
                             value = """
-                                    { "username": "eleni", "password": "eleni123", "email":"eleni@gmail.com", "role":"USER" }
+                                    {"customerNumber": "123","username": "eleni","password": "eleni123","email":"eleni@gmail.com","role":"USER"}
                                     """
             )))
             @Valid @RequestBody User user){

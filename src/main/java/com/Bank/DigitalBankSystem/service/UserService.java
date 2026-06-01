@@ -21,11 +21,16 @@ public class UserService {
         user.setPassword(encoder.encode(user.getPassword()));
         User userSaved = userRepo.save(user);
         return UserDTO.builder()
+                .customerNumber(user.getCustomerNumber())
                 .username(user.getUsername())
                 .email(userSaved.getEmail()).build();
     }
 
     public Optional<User> findUser(Long userId) {
         return userRepo.findById(userId);
+    }
+
+    public Optional<User> findUserIdByCustomerNumber(String customerNumber) {
+        return Optional.ofNullable(userRepo.findByCustomerNumber(customerNumber));
     }
 }

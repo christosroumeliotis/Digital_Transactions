@@ -27,9 +27,9 @@ public class TransactionDTO {
     private Double amount;
     private LocalDateTime transactionTime;
     @NotNull(message = "Sender cannot be null")
-    private Long senderId;
+    private String senderCustomerNumber;
     @NotNull(message = "Sender's account cannot be null")
-    private Long senderAccountId;
-    private Long receiverId;
-    private Long receiverAccountId;
+    private String senderAccountNumber;
+    private String receiverCustomerNumber;
+    private String receiverAccountNumber;
 }

@@ -38,21 +38,20 @@ public class TransactionService {
     private final Utils utils = new UtilsImpl();
 
     @Transactional
-    @CacheEvict(value = "account", key = "#transactionDto.senderAccountId")
     @Caching(evict = {
-            @CacheEvict(value = "account", key = "#transactionDto.senderAccountId"),
+            @CacheEvict(value = "account_number", key = "#transactionDto.senderAccountNumber"),
 
-            @CacheEvict(value = "user_accounts", key = "#transactionDto.senderId")
+            @CacheEvict(value = "user_accounts_crs", key = "#transactionDto.senderCustomerNumber")
     })
     public Transaction depositWithdraw(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
         if (amount < 0) throw new NotValidAmountException("Negative amount not valid");
 
-        Long userSenderId = transactionDto.getSenderId();
-        User senderUser = utils.getTheUser(userSenderId, userService);
-        Long accountSenderId = transactionDto.getSenderAccountId();
-        Account senderAccount = utils.getTheAccountOfUser(accountSenderId, userSenderId, accountService);
+        String userSenderCrs = transactionDto.getSenderCustomerNumber();
+        User senderUser = utils.getUserByCustomerName(userSenderCrs, userService);
+        String senderAccountNumber = transactionDto.getSenderAccountNumber();
+        Account senderAccount = utils.getTheAccountOfUser(senderAccountNumber, userSenderCrs, accountService);
 
         if(transactionDto.getType().equals(TransactionTypeEnum.WITHDRAW)){
             if(senderAccount.getBalance() < amount){
@@ -77,30 +76,31 @@ public class TransactionService {
 
     @Transactional//If throws an exception before the transaction is saved, we rollback
     @Caching(evict = {
-            @CacheEvict(value = "account",
-                    key = "#transactionDto.senderAccountId"),
+            @CacheEvict(value = "account_number",
+                    key = "#transactionDto.senderAccountNumber"),
 
-            @CacheEvict(value = "account",
-                    key = "#transactionDto.receiverAccountId"),
+            @CacheEvict(value = "account_number",
+                    key = "#transactionDto.receiverAccountNumber"),
 
-            @CacheEvict(value = "user_accounts", key = "#transactionDto.senderId"),
+            @CacheEvict(value = "user_accounts_crs", key = "#transactionDto.senderCustomerNumber"),
 
-            @CacheEvict(value = "user_accounts", key = "#transactionDto.receiverId")
+            @CacheEvict(value = "user_accounts_crs", key = "#transactionDto.receiverCustomerNumber"),
+
     })
     public Transaction sendMoney(TransactionDTO transactionDto) throws Exception {
 
         Double amount = transactionDto.getAmount();
         if (amount < 0) throw new NotValidAmountException("Negative amount not valid");
 
-        Long userSenderId = transactionDto.getSenderId();
-        User senderUser = utils.getTheUser(userSenderId, userService);
-        Long accountSenderId = transactionDto.getSenderAccountId();
-        Account senderAccount = utils.getTheAccountOfUser(accountSenderId, userSenderId, accountService);
+        String userSenderCrs = transactionDto.getSenderCustomerNumber();
+        User senderUser = utils.getUserByCustomerName(userSenderCrs, userService);
+        String senderAccountNumber = transactionDto.getSenderAccountNumber();
+        Account senderAccount = utils.getTheAccountOfUser(senderAccountNumber, userSenderCrs, accountService);
 
-        Long userReceiverId = transactionDto.getReceiverId();
-        User receiverUser = utils.getTheUser(userReceiverId, userService);
-        Long accountReceiverId = transactionDto.getReceiverAccountId();
-        Account receiverAccount = utils.getTheAccountOfUser(accountReceiverId, userReceiverId, accountService);
+        String userReceiverCrs = transactionDto.getReceiverCustomerNumber();
+        User receiverUser = utils.getUserByCustomerName(userReceiverCrs, userService);
+        String receiverAccountNumber = transactionDto.getReceiverAccountNumber();
+        Account receiverAccount = utils.getTheAccountOfUser(receiverAccountNumber, userReceiverCrs, accountService);
 
         if(senderAccount.getBalance() < amount){
             throw new NotEnoughBalanceException("Balance less than " + amount);

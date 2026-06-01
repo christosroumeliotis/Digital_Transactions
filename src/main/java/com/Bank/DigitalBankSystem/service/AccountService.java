@@ -27,14 +27,15 @@ public class AccountService {
 
     private final Utils utils = new UtilsImpl();
 
-    public String createAccount(Long userId) throws Exception {
-        User userFound = utils.getTheUser(userId, userService);
+    public String createAccount(String customerNumber, String accountNumber) throws Exception {
+        User userFound = utils.getUserByCustomerName(customerNumber, userService);
         Account account = Account.builder()
                 .user(userFound)
+                .accountNumber(accountNumber)
                 .createdAt(LocalDateTime.now())
                 .balance(0.0).build();
         accountRepo.save(account);
-        return userFound.getUsername() + " created a new account!";
+        return userFound.getUsername() + " created the " + accountNumber + " account!";
     }
 
     @Cacheable(value = "user_accounts", key = "#userId")
@@ -43,9 +44,22 @@ public class AccountService {
         return userFound.getAccount();
     }
 
+    @Cacheable(value = "user_accounts_crs", key = "#customerNumber")
+    public List<Account> findAccountsByCustomerNumber(String customerNumber) throws Exception {
+        User userFound = utils.getUserByCustomerName(customerNumber, userService);
+        return userFound.getAccount();
+    }
+
     @Cacheable(value = "account", key = "#accountId")
     public Account findAccountByAccountId(Long accountId) {
         Optional<Account> accountFound = accountRepo.findById(accountId);
+        if(accountFound.isEmpty()) throw new NoRecordFoundException("Account not found");
+        return accountFound.get();
+    }
+
+    @Cacheable(value = "account_number", key = "#accountNumber")
+    public Account findAccountByAccountNumber(String accountNumber) {
+        Optional<Account> accountFound = accountRepo.findByAccountNumber(accountNumber);
         if(accountFound.isEmpty()) throw new NoRecordFoundException("Account not found");
         return accountFound.get();
     }
