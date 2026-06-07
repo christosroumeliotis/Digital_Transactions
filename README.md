@@ -45,10 +45,10 @@ A secure and scalable backend system that simulates core banking simple operatio
 
 <h2>⚙️ How to Run</h2>
 1. Clone repository
-   git clone https://github.com/christosroumeliotis/Digital_Transactions
-2. Run docker-compose up --build
-4. Access API http://localhost:8080
+   git clone https://github.com/christosroumeliotis/Digital_Transactions   
+2. Run docker-compose up --build   
+4. Access API http://localhost:8080   
 
 <h2>📌 API Overview</h2>
-http://localhost:8080/swagger-ui/index.html
-http://16.171.0.141:8080/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html   
+http://13.53.122.49:8080/swagger-ui/index.html
