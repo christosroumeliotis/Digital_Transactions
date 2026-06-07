@@ -27,6 +27,9 @@ public class OpenApiConfiguration {
                 .version("1.0")
                 .description("This API exposes endpoints of simple digital bank.")
                 .contact(myContact);
-        return new OpenAPI().info(information).servers(List.of(server));
+        return new OpenAPI().info(information).servers(List.of(
+                new Server().url("http://localhost:8080").description("Development"),
+                new Server().url("http://16.171.0.141:8080").description("Live")
+        ));
     }
 }
